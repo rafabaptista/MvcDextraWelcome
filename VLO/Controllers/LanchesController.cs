@@ -20,13 +20,11 @@ namespace VLO.Controllers
 
         #region .: Actions :.
         
-        // GET: Lanches
         public ActionResult Index()
         {
             return View(db.Lanches.ToList());
         }
-
-        // GET: Lanches/Details/5
+        
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -40,16 +38,12 @@ namespace VLO.Controllers
             }
             return View(lanche);
         }
-
-        // GET: Lanches/Create
+        
         public ActionResult Create()
         {
             return View();
         }
-
-        // POST: Lanches/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "IdLanche,LancheNome")] Lanche lanche)
@@ -63,8 +57,7 @@ namespace VLO.Controllers
 
             return View(lanche);
         }
-
-        // GET: Lanches/Edit/5
+        
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -78,10 +71,7 @@ namespace VLO.Controllers
             }
             return View(lanche);
         }
-
-        // POST: Lanches/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "IdLanche,LancheNome")] Lanche lanche)
@@ -94,8 +84,7 @@ namespace VLO.Controllers
             }
             return View(lanche);
         }
-
-        // GET: Lanches/Delete/5
+        
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -109,8 +98,7 @@ namespace VLO.Controllers
             }
             return View(lanche);
         }
-
-        // POST: Lanches/Delete/5
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)

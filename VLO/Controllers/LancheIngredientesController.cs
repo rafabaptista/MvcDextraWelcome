@@ -17,7 +17,6 @@ namespace VLO.Controllers
 
         #region .: Actions :.
         
-        // GET: LancheIngredientes
         public ActionResult Index()
         {
             var ingredientes = db.Ingredientes.Select(ing => new

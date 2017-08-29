@@ -18,7 +18,6 @@ namespace VLO.Models
         [Display(Name = "Valor")]
         [Required(ErrorMessage = "Digite o Valor do Ingrediente.")]
         [DataType(DataType.Currency, ErrorMessage = "Digite o valore separado por virgula (,)")]
-        //[Range(0,01, 9999.00, ErrorMessage = "Digite valores entre 0,01 a 9999,00." )]
         public decimal Valor { get; set; }
     }
 }
