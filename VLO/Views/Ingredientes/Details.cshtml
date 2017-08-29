@@ -1,18 +1,16 @@
 ﻿@model VLO.Models.Ingrediente
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Detalhe de Ingrediente";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
-
 <div>
-    <h4>Ingrediente</h4>
+    <h4>Detalhe Ingrediente</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.IngredienteNome)
+            @Html.LabelFor(model => model.IngredienteNome, "Ingrediente:", htmlAttributes: new { @class = "control-label col-md-2" })
         </dt>
 
         <dd>
@@ -30,6 +28,6 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.IdIngrediente }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Editar", "Edit", new { id = Model.IdIngrediente }) |
+    @Html.ActionLink("Voltar", "Index")
 </p>

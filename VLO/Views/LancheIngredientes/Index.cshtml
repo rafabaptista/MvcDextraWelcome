@@ -9,22 +9,6 @@
 {
     @Html.AntiForgeryToken()
 
-    @*if(ViewBag.TheResult != null)
-    {
-        if (ViewBag.TheResult == true)
-        {
-            <div class="alert alert-success">
-                <strong>DADOS SALVOS!</strong> Lanche Criado.
-            </div>
-        }
-        else
-        {
-            <div class="alert alert-danger">
-                <strong>ERRO!</strong> @ViewBag.ErrorMessage
-            </div>*@
-        }
-    }
-
     <div class="form-horizontal">
         <h4>Montar Lanche por Ingrediente</h4>
         <hr />
@@ -62,7 +46,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Montar" class="btn btn-default" />
             </div>
         </div>
 

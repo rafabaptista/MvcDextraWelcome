@@ -22,3 +22,13 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.discounttextvalue {
+        color: blue;
+        font-size:large;
+}
+
+.grandtotaltextvalue {
+        color: red;
+        font-size:x-large;
+}

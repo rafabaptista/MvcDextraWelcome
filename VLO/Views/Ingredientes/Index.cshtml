@@ -1,19 +1,19 @@
 ﻿@model IEnumerable<VLO.Models.Ingrediente>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Ingredientes";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Ingredientes</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Registrar novo Ingrediente", "Create")
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.IngredienteNome)
+            Ingrediente
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Valor)
@@ -30,9 +30,9 @@
             @Html.DisplayFor(modelItem => item.Valor)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.IdIngrediente }) |
-            @Html.ActionLink("Details", "Details", new { id=item.IdIngrediente }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.IdIngrediente })
+            @Html.ActionLink("Editar", "Edit", new { id=item.IdIngrediente }) |
+            @Html.ActionLink("Detalhes", "Details", new { id=item.IdIngrediente }) |
+            @Html.ActionLink("Remover", "Delete", new { id=item.IdIngrediente })
         </td>
     </tr>
 }

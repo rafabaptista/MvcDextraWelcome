@@ -1,19 +1,19 @@
 ﻿@model IEnumerable<VLO.Models.Lanche>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Lanches";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Lanches</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Registrar Novo Lanche", "Create")
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.LancheNome)
+            Lanche
         </th>
         <th></th>
     </tr>
@@ -24,9 +24,9 @@
             @Html.DisplayFor(modelItem => item.LancheNome)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.IdLanche }) |
-            @Html.ActionLink("Details", "Details", new { id=item.IdLanche }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.IdLanche })
+            @Html.ActionLink("Editar", "Edit", new { id=item.IdLanche }) |
+            @Html.ActionLink("Detalhes", "Details", new { id=item.IdLanche }) |
+            @Html.ActionLink("Remover", "Delete", new { id=item.IdLanche })
         </td>
     </tr>
 }

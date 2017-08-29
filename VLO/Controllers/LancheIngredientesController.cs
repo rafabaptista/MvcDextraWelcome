@@ -6,52 +6,63 @@ using System.Web.Mvc;
 using VLO.Models;
 
 namespace VLO.Controllers
-{   
+{
     public class LancheIngredientesController : Controller
     {
+        #region .: Global :.
+        
         private ContextDB db = new ContextDB();
 
+        #endregion
+
+        #region .: Actions :.
+        
         // GET: LancheIngredientes
         public ActionResult Index()
         {
-            //using (var db = new ContextDB())
-            //{
-                var ingredientes = db.Ingredientes.Select(ing => new
-                {
-                    IdIngrediente = ing.IdIngrediente,
-                    IngredienteNome = ing.IngredienteNome
-                }).ToList();
+            var ingredientes = db.Ingredientes.Select(ing => new
+            {
+                IdIngrediente = ing.IdIngrediente,
+                IngredienteNome = ing.IngredienteNome
+            }).ToList();
 
-                var lanches = db.Lanches.Select(lan => new
-                {
-                    IdLanche = lan.IdLanche,
-                    LancheNome = lan.LancheNome
-                }).ToList();
+            var lanches = db.Lanches.Select(lan => new
+            {
+                IdLanche = lan.IdLanche,
+                LancheNome = lan.LancheNome
+            }).ToList();
 
-                ViewBag.Lanches = new SelectList(lanches, "IdLanche", "LancheNome");
-                ViewBag.Ingredientes = new MultiSelectList(ingredientes, "IdIngrediente", "IngredienteNome");
-                
-                return View();
-            //}
+            ViewBag.Lanches = new SelectList(lanches, "IdLanche", "LancheNome");
+            ViewBag.Ingredientes = new MultiSelectList(ingredientes, "IdIngrediente", "IngredienteNome");
+
+            return View();
+
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Index([Bind(Include = "Lanche")] int? IdLanche, [Bind(Include = "IdIngrediente")] List<int> lstIdIngrediente)
         {
             if (ModelState.IsValid)
             {
-                lstIdIngrediente.ForEach(delegate (int idIngrediente)
+                if (lstIdIngrediente != null)
                 {
-                    db.LancheIngredientes.Add(new LancheIngrediente { IdLanche = (int)IdLanche, IdIngrediente = idIngrediente });
-                });
+                    lstIdIngrediente.ForEach(delegate (int idIngrediente)
+                    {
+                        db.LancheIngredientes.Add(new LancheIngrediente { IdLanche = (int)IdLanche, IdIngrediente = idIngrediente });
+                    });
+
+                    
+                }
+                else
+                {
+                    db.LancheIngredientes.Add(new LancheIngrediente { IdLanche = (int)IdLanche, IdIngrediente = 0 });
+                }
 
                 db.SaveChanges();
-
-                //ViewBag.TheResult = true;
-
-                return RedirectToAction("Index");
+                
+                return RedirectToAction("Index", "Cardapio");
             }
             else
             {
@@ -59,10 +70,13 @@ namespace VLO.Controllers
                 ViewBag.ErrorMessage = "Verificar Campos";
             }
 
-            return View();  
+            return View();
         }
 
+        #endregion
 
+        #region .: Methods :.
+        
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -71,5 +85,7 @@ namespace VLO.Controllers
             }
             base.Dispose(disposing);
         }
+
+        #endregion
     }
 }

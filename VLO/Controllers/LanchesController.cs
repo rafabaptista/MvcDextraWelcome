@@ -12,8 +12,14 @@ namespace VLO.Controllers
 {
     public class LanchesController : Controller
     {
+        #region .: Global :.
+        
         private ContextDB db = new ContextDB();
 
+        #endregion
+
+        #region .: Actions :.
+        
         // GET: Lanches
         public ActionResult Index()
         {
@@ -115,6 +121,10 @@ namespace VLO.Controllers
             return RedirectToAction("Index");
         }
 
+        #endregion
+
+        #region .: Methods :.
+        
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -123,5 +133,7 @@ namespace VLO.Controllers
             }
             base.Dispose(disposing);
         }
+
+        #endregion
     }
 }

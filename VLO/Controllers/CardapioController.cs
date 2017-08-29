@@ -26,39 +26,10 @@ namespace VLO.Controllers
             return View(lstCardapio);
         }
         
-        // GET: Cardapio/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Cardapio/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Cardapio/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-
-
         public ActionResult Pedido(int? id)
         {
             Cardapio cardapio;
+            decimal valorSum = 0;
 
             if (id == null)
             {
@@ -81,16 +52,19 @@ namespace VLO.Controllers
             else
                 return HttpNotFound();
 
+            valorSum = GetValorSum(listIngredientes);
+
+            ViewBag.DiscountMessage = "Nehuma promoção.";
             ViewBag.Ingredientes = listIngredientes;
             Session["Ingredientes"] = listIngredientes;
             ViewBag.Cardapio = cardapio;
+            ViewBag.Discount = 0;
+            ViewBag.ValorSum = valorSum;
+            ViewBag.ValorTotal = valorSum;
 
             return View(cardapio);
         }
         
-        // POST: Ingredientes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Pedido([Bind(Include = "IdIngrediente,IngredienteNome")] int? id, int? IdIngrediente, string IngredienteNome)
@@ -98,9 +72,11 @@ namespace VLO.Controllers
             Cardapio cardapio;
             
             List<Ingrediente> listIngredientes = (List < Ingrediente > )Session["Ingredientes"];
-
-
+            
             Ingrediente ingrediente = (from i in db.Ingredientes where i.IdIngrediente == IdIngrediente select i).FirstOrDefault();
+
+            string returnDiscountMessage = string.Empty;
+            decimal valorSum = 0, valorDiscount = 0;
 
             listIngredientes.Add(ingrediente);
 
@@ -116,33 +92,51 @@ namespace VLO.Controllers
             else
                 return HttpNotFound();
 
+            valorSum = GetValorSum(listIngredientes);
+
+            valorDiscount = CheckDiscount(listIngredientes, out returnDiscountMessage);
+
+            ViewBag.Discount = valorDiscount;
+            ViewBag.DiscountMessage = returnDiscountMessage;
+
             ViewBag.Ingredientes = listIngredientes;
             Session["Ingredientes"] = listIngredientes;
             ViewBag.Cardapio = cardapio;
-            
+            ViewBag.ValorSum = valorSum;
+            ViewBag.ValorTotal = valorSum - valorDiscount;
+
             return View(cardapio);
         }
-
-        // GET: Cardapio/Delete/5
+        
         public ActionResult Delete(int id)
         {
             return View();
         }
         
-        // POST: Cardapio/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
+            List<Ingrediente> listIngredientes = (List<Ingrediente>)Session["Ingredientes"];
+            string returnDiscountMessage = string.Empty;
+            decimal valorSum = 0, valorDiscount = 0;
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            listIngredientes.Remove(listIngredientes[id]);
+
+            valorSum = GetValorSum(listIngredientes);
+
+            valorDiscount = CheckDiscount(listIngredientes, out returnDiscountMessage);
+
+            ViewBag.Discount = valorDiscount;
+            ViewBag.DiscountMessage = returnDiscountMessage;
+
+            ViewBag.Ingredientes = listIngredientes;
+            Session["Ingredientes"] = listIngredientes;
+            
+            ViewBag.ValorSum = valorSum;
+            ViewBag.ValorTotal = valorSum - valorDiscount;
+
+            return View("Pedido"); 
         }
 
         #endregion
@@ -222,6 +216,67 @@ namespace VLO.Controllers
             });
 
             return lstCardapioReturn;
+        }
+
+        private decimal CheckDiscount(List<Ingrediente> listIngredientes, out string returnDiscountMessage)
+        {
+            int countHamburguer = GetQtyIngrediente("CARNE", listIngredientes),
+                countQueijo = GetQtyIngrediente("QUEIJO", listIngredientes),
+                countAlface = GetQtyIngrediente("ALFACE", listIngredientes),
+                countBacon = GetQtyIngrediente("BACON", listIngredientes),
+                qtyPromoHamburguer = 0,
+                qtyPromoQueijo = 0;
+
+            decimal valorHamburguer = GetValorIngrediente("CARNE"),
+                    valorQueijo = GetValorIngrediente("QUEIJO"),
+                    valorSum = GetValorSum(listIngredientes),
+                    valorTotal = 0;
+
+            if (countAlface > 0 && countBacon == 0)
+            {
+                valorTotal = (valorSum * 10) / 100;
+                returnDiscountMessage = "Promoções Aplicadas: <br />- Light";
+            }
+            else
+            {
+                valorTotal = 0;
+                returnDiscountMessage = string.Empty;
+            }
+
+            if (countHamburguer >= 3)
+            {
+                qtyPromoHamburguer = (int)(countHamburguer - (countHamburguer / 3));
+
+                valorTotal = (valorHamburguer * (countHamburguer - qtyPromoHamburguer)) + valorTotal;
+
+                returnDiscountMessage += (string.IsNullOrEmpty(returnDiscountMessage) ? "Promoções Aplicadas: <br />- Muita carne" : "<br />- Muita carne");
+            }
+
+            if (countQueijo >= 3)
+            {
+                qtyPromoQueijo = (int)(countQueijo - (countQueijo / 3));
+
+                valorTotal = (valorQueijo * (countQueijo - qtyPromoQueijo)) + valorTotal;
+
+                returnDiscountMessage += (string.IsNullOrEmpty(returnDiscountMessage) ? "Promoções Aplicadas: <br />- Muito queijo" : "<br />- Muito queijo");
+            }
+
+            return valorTotal;
+        }
+
+        private int GetQtyIngrediente(string ingrediente, List<Ingrediente> listIngredientes)
+        {
+            return (from i in listIngredientes where i.IngredienteNome.ToUpper().Trim().Contains(ingrediente) select i).ToList().Count();
+        }
+
+        private decimal GetValorIngrediente(string ingrediente)
+        {
+            return (from i in db.Ingredientes where i.IngredienteNome.ToUpper().Contains(ingrediente) select i.Valor).FirstOrDefault();
+        }
+
+        private decimal GetValorSum(List<Ingrediente> listIngredientes)
+        {
+            return listIngredientes.Sum(li => li.Valor);
         }
 
         #endregion

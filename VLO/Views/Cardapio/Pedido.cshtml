@@ -11,8 +11,8 @@
 {
     @Html.AntiForgeryToken()
 
-    decimal total = 0;
-    
+    int position = 0;
+
     <div class="form-horizontal">
         <h4>Ingredientes</h4>
         <hr />
@@ -24,8 +24,6 @@
 
                 @foreach (VLO.Models.Ingrediente item in ViewBag.Ingredientes)
                 {
-                    total += item.Valor;
-
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => item.IngredienteNome)
@@ -38,10 +36,28 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Valor)
                         </td>
+                        <td>
+                            
+                            @using (Html.BeginForm("Delete", "Cardapio", new { id = position }))
+                            {
+                                @Html.AntiForgeryToken()
+
+                                <input type="submit" value="Remover Ingrediente (ghost)"class="btn btn-default" style="display:none;" />
+                            }
+
+
+
+                            @using (Html.BeginForm("Delete", "Cardapio", new { id = position }))
+                                {
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="submit" value="Remover Ingrediente" id="Delete" class="btn btn-default" />
+                                }
+                        </td>
                     </tr>
+
+                    position++;
                 }
-
-
                 <tr>
                     <td>
                         <b>
@@ -55,9 +71,50 @@
                     </td>
                     <td>
                         <b>
-                            @total.ToString("C")
+                            @ViewBag.ValorSum.ToString("C")
                         </b>
                     </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Desconto (promoções):
+                        </b>
+                    </td>
+                    <td>
+                        <center>
+                            ...
+                        </center>
+                    </td>
+                    <td>
+                        <b>
+                            <label class="discounttextvalue" data-toggle="tooltip" data-html="true" title="@ViewBag.DiscountMessage" data-placement="right">
+                                @ViewBag.Discount.ToString("C")
+                            </label>
+                        </b>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>
+                            Valor a ser pago:
+                        </b>
+                    </td>
+                    <td>
+                        <center>
+                            ...
+                        </center>
+                    </td>
+                    <td>
+                        <b>
+                            <label class="grandtotaltextvalue" data-toggle="tooltip" title="Valor total a ser pago" data-placement="right">
+                                @ViewBag.ValorTotal.ToString("C")
+                            </label>
+                        </b>
+                    </td>
+                    <td></td>
                 </tr>
             </table>
 
@@ -66,43 +123,71 @@
         <br />
 
         <div class="form-group">
-            @Html.Label("Adicionar Ingrediente:")
-            <br />
+            @using (Html.BeginForm("Pedido", "Cardapio", new { id = (Model != null) ? Model.IdLanche : 0 }))
+            {
+                @Html.Label("Adicionar Ingrediente:")
+                <br />
 
-            <div class="col-md-10">
+                <div class="col-md-10">
 
-                @using (var db = new VLO.Models.ContextDB())
-                {
-                    foreach (var l in db.Ingredientes.Select(lan => new
+                    @using (var db = new VLO.Models.ContextDB())
                     {
-                        IdIngrediente = lan.IdIngrediente,
-                        IngredienteNome = lan.IngredienteNome + " ( R$" + lan.Valor + " )"
-                    }).ToList())
-                    {
-                        <input type="radio" name="IdIngrediente" id=@l.IngredienteNome value=@l.IdIngrediente>
-                        @l.IngredienteNome;
-                        <br />
+                        foreach (var l in db.Ingredientes.Select(lan => new
+                        {
+                            IdIngrediente = lan.IdIngrediente,
+                            IngredienteNome = lan.IngredienteNome + " ( R$" + lan.Valor + " )"
+                        }).ToList())
+                        {
+                            <input type="radio" name="IdIngrediente" id=@l.IngredienteNome value=@l.IdIngrediente>
+                            @l.IngredienteNome;
+                            <br />
+                        }
                     }
-                }
 
-            </div>
+                </div>
+                
+                @Html.AntiForgeryToken()
 
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Adicionar" id="AddIngrediente" class="btn btn-default" />
-            </div>
-            
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Adicionar" id="AddIngrediente" class="btn btn-default" />
+                </div>
+            }
+
         </div>
 
+        <br />
+        <br />
+
+        
+
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink("Fechar Pedido", "Index", "Cardapio")
+
+            @*<input type="submit" value="Fechar Pedido" id="ClosePedido" class="btn btn-default" />*@
+        </div>
+        
+        <br />
+        <br />
+
     </div>
-    }
+}
 
-    <div>
-        @Html.ActionLink("Back to List", "Index")
-    </div>
+<br />
+<br />
 
-    @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
+<div>
+    @Html.ActionLink("Voltar", "Index", "Cardapio")
+</div>
 
-    }
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+
+}
 
 
