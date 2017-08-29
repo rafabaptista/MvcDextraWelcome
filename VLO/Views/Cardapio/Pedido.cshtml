@@ -1,0 +1,108 @@
+﻿@model VLO.Models.Cardapio
+
+@{
+    ViewBag.Title = "Pedido";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Pedido</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    decimal total = 0;
+    
+    <div class="form-horizontal">
+        <h4>Ingredientes</h4>
+        <hr />
+
+        <div class="form-group">
+            <br />
+
+            <table class="table">
+
+                @foreach (VLO.Models.Ingrediente item in ViewBag.Ingredientes)
+                {
+                    total += item.Valor;
+
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IngredienteNome)
+                        </td>
+                        <td>
+                            <center>
+                                ...
+                            </center>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Valor)
+                        </td>
+                    </tr>
+                }
+
+
+                <tr>
+                    <td>
+                        <b>
+                            Total:
+                        </b>
+                    </td>
+                    <td>
+                        <center>
+                            ...
+                        </center>
+                    </td>
+                    <td>
+                        <b>
+                            @total.ToString("C")
+                        </b>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+        <br />
+
+        <div class="form-group">
+            @Html.Label("Adicionar Ingrediente:")
+            <br />
+
+            <div class="col-md-10">
+
+                @using (var db = new VLO.Models.ContextDB())
+                {
+                    foreach (var l in db.Ingredientes.Select(lan => new
+                    {
+                        IdIngrediente = lan.IdIngrediente,
+                        IngredienteNome = lan.IngredienteNome + " ( R$" + lan.Valor + " )"
+                    }).ToList())
+                    {
+                        <input type="radio" name="IdIngrediente" id=@l.IngredienteNome value=@l.IdIngrediente>
+                        @l.IngredienteNome;
+                        <br />
+                    }
+                }
+
+            </div>
+
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Adicionar" id="AddIngrediente" class="btn btn-default" />
+            </div>
+            
+        </div>
+
+    </div>
+    }
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+
+    }
+
+

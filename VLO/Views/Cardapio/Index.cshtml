@@ -1,0 +1,53 @@
+﻿@model IEnumerable<VLO.Models.Cardapio> 
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Cardapio</h2>
+<br />
+
+<table class="table">
+    <tr>
+        <th>
+            Lanche
+        </th>
+        <th>
+            Ingredientes
+        </th>
+        <th>
+
+        </th>
+        <th>
+            Valor
+        </th>
+        <th>
+            Realizar Pedido
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.LancheNome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IngredienteNome)
+            </td>
+            <td>
+                <center>
+                    ...
+                </center>
+            </td>
+            <td>
+                R$ @Html.DisplayFor(modelItem => item.Valor)
+            </td>
+            <td>
+                @Html.ActionLink("Realizar Pedido", "Pedido", new { id = item.IdLanche })
+            </td>
+        </tr>
+    }
+
+</table>

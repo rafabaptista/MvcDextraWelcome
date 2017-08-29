@@ -1,0 +1,73 @@
+﻿@model VLO.Models.LancheIngrediente
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @*if(ViewBag.TheResult != null)
+    {
+        if (ViewBag.TheResult == true)
+        {
+            <div class="alert alert-success">
+                <strong>DADOS SALVOS!</strong> Lanche Criado.
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger">
+                <strong>ERRO!</strong> @ViewBag.ErrorMessage
+            </div>*@
+        }
+    }
+
+    <div class="form-horizontal">
+        <h4>Montar Lanche por Ingrediente</h4>
+        <hr />
+        <div class="form-group">
+
+            @Html.Label("Lanche:")
+            <br />
+
+            <div class="col-md-10">
+
+                @using (var db = new VLO.Models.ContextDB())
+                {
+                    foreach (var l in db.Lanches.Select(lan => new
+                    {
+                        IdLanche = lan.IdLanche,
+                        LancheNome = lan.LancheNome
+                    }).ToList())
+                    {
+                        <input type="radio" name="IdLanche" id=@l.LancheNome value=@l.IdLanche >   
+                        @l.LancheNome;
+                        <br />
+                    }
+                }
+
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Ingredientes (Segure Ctrl para selecionar mais de um):")
+            <br />
+            @Html.DropDownList("lstIdIngrediente", (MultiSelectList)ViewBag.Ingredientes, new { multiple = "multiple" })
+
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+
+    </div>
+
+}
+
+
