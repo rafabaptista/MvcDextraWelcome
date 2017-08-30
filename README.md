@@ -12,7 +12,7 @@ o	Css 3<br />
 o	jQuery 1.10.2<br />
 •	Persistence: MS SQL Local DB<br /><br /><br />
 
-<b>Instruções para Executar</b><br />
+## Instruções de Execução
 •	Para abrir a Solução:<br />
 &nbsp;o	Visual Studio 201x (com suporte a versão 4.5 do Framework)<br />
 &nbsp;o	NuGet Package habilitado (baixará os packages adicionais automaticamente na primeira execução do projeto, porém é necessário que o NuGet esteja instalado e habilitado<br />
