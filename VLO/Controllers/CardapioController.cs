@@ -232,16 +232,8 @@ namespace VLO.Controllers
                     valorSum = GetValorSum(listIngredientes),
                     valorTotal = 0;
 
-            if (countAlface > 0 && countBacon == 0)
-            {
-                valorTotal = (valorSum * 10) / 100;
-                returnDiscountMessage = "Promoções Aplicadas: <br />- Light";
-            }
-            else
-            {
-                valorTotal = 0;
-                returnDiscountMessage = string.Empty;
-            }
+            returnDiscountMessage = string.Empty;
+
 
             if (countHamburguer >= 3)
             {
@@ -259,6 +251,13 @@ namespace VLO.Controllers
                 valorTotal = (valorQueijo * (countQueijo - qtyPromoQueijo)) + valorTotal;
 
                 returnDiscountMessage += (string.IsNullOrEmpty(returnDiscountMessage) ? "Promoções Aplicadas: <br />- Muito queijo" : "<br />- Muito queijo");
+            }
+
+            if (countAlface > 0 && countBacon == 0)
+            {
+                valorTotal = ((valorSum - valorTotal) * 10) / 100 + valorTotal;
+                
+                returnDiscountMessage += (string.IsNullOrEmpty(returnDiscountMessage) ? "Promoções Aplicadas: <br />- Light" : "<br />- Light");
             }
 
             return valorTotal;
