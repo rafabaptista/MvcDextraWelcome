@@ -218,7 +218,7 @@ namespace VLO.Controllers
             return lstCardapioReturn;
         }
 
-        private decimal CheckDiscount(List<Ingrediente> listIngredientes, out string returnDiscountMessage)
+        public static decimal CheckDiscount(List<Ingrediente> listIngredientes, out string returnDiscountMessage)
         {
             int countHamburguer = GetQtyIngrediente("CARNE", listIngredientes),
                 countQueijo = GetQtyIngrediente("QUEIJO", listIngredientes),
@@ -264,19 +264,31 @@ namespace VLO.Controllers
             return valorTotal;
         }
 
-        private int GetQtyIngrediente(string ingrediente, List<Ingrediente> listIngredientes)
+        public static int GetQtyIngrediente(string ingrediente, List<Ingrediente> listIngredientes)
         {
             return (from i in listIngredientes where i.IngredienteNome.ToUpper().Trim().Contains(ingrediente) select i).ToList().Count();
         }
 
-        private decimal GetValorIngrediente(string ingrediente)
+        public static decimal GetValorIngrediente(string ingrediente)
         {
-            return (from i in db.Ingredientes where i.IngredienteNome.ToUpper().Contains(ingrediente) select i.Valor).FirstOrDefault();
+            using (ContextDB dbb = new ContextDB())
+            { 
+                return (from i in dbb.Ingredientes where i.IngredienteNome.ToUpper().Contains(ingrediente) select i.Valor).FirstOrDefault();
+            }
         }
 
-        private decimal GetValorSum(List<Ingrediente> listIngredientes)
+        public static decimal GetValorSum(List<Ingrediente> listIngredientes)
         {
             return listIngredientes.Sum(li => li.Valor);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
 
         #endregion
